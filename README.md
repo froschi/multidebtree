@@ -11,3 +11,8 @@ init-apt-repos.sh does all of the heavy lifting. It
 * runs apt-get update for each of the fake repos.
 
 You may now run apt commands which obey the APT\_CONFIG environment variable.
+
+Links & References
+==================
+
+* Idea blatantly stolen from http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=550961#30
