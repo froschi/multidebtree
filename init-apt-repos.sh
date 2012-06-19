@@ -20,6 +20,7 @@ SUBS_UBUNTU="\
   multiverse\
   restricted\
   universe\
+  chef\
 "
 
 CODENAMES_DEBIAN="\
@@ -55,12 +56,21 @@ for dist in $CODENAMES_UBUNTU; do
       : > $APT_ROOT/sources.list
     fi
     for sub in $SUBS_UBUNTU; do
-      URL="http://ftp.ubuntu.com/ubuntu/dists/${dist}/${sub}/binary-${arch}/Packages.bz2"
+      URL=""
+      if [ "$sub" == "chef" ]; then
+        URL="http://apt.opscode.com/dists/${dist}-0.10/main/binary-${arch}/Packages"
+      else
+        URL="http://ftp.ubuntu.com/ubuntu/dists/${dist}/${sub}/binary-${arch}/Packages.bz2"
+      fi
       FILENAME="$APT_ROOT/lists/$sub/Packages"
       if [ -f $FILENAME ]; then
         echo "[-] $FILENAME already downloaded, skipping."
       else
-        wget $URL -O - | bunzip2 > $FILENAME
+        if [ "$sub" == "chef" ]; then
+          wget $URL -O - > $FILENAME
+        else
+          wget $URL -O - | bunzip2 > $FILENAME
+        fi
       fi
       echo "deb file:$APT_ROOT/lists/$sub ./" >> $APT_ROOT/sources.list
     done
