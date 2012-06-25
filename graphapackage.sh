@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 
 MULTIDEB_ROOT=$HOME/.multideb
 ARCH=amd64
@@ -21,7 +21,7 @@ PKG_NAME=$1
 pdfs=( )
 
 for dist in $DISTS; do
-  echo "[+] Processing $dist ..."
+  echo -n "[+] Processing $dist ..."
   APT_ROOT="$MULTIDEB_ROOT/$dist/$ARCH"
 
   DOT_FILE=$dist-$ARCH-$PKG_NAME.dot
@@ -35,16 +35,22 @@ for dist in $DISTS; do
     $PKG_NAME \
   2>/dev/null > $DOT_FILE
   if [ "$?" -eq "0" ]; then
+    echo " found."
     pdfs=( "${pdfs[@]}" "$PDF_FILE" )
     sed "2i label=\"$PKG_NAME ($dist)\";" -i $DOT_FILE
     sed "3i labelloc=t;" -i $DOT_FILE
     dot -Tpdf -o $PDF_FILE $DOT_FILE
+  else
+    echo " not found."
   fi
 done
 
-if [ "${#pdfs[*]}" -gt "1" ]; then
+if [ "${#pdfs[*]}" -eq "0" ]; then
+  echo "[-] No output was produced; was the package name correct?"
+elif [ "${#pdfs[*]}" -gt "1" ]; then
   pdfunite *-$PKG_NAME.pdf $PKG_NAME.pdf
 else
   mv ${pdfs[0]} $PKG_NAME.pdf
 fi
+echo "[+] Removing leftovers ..."
 make clean
