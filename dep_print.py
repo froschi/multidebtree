@@ -16,15 +16,19 @@ extlist = []  # list of existing cookbooks
 donelist = [] # list of things already processed this session.
 workdeque = deque()
 
-package_mappings = ['libgcrypt11']
-
 endfile = "/home/thorsten/.debtree/endlist"
 skipfile = "/home/thorsten/.debtree/skiplist"
-endlist = [line.strip() for line in open(endfile)]
-skiplist = [line.strip() for line in open(skipfile)]
 
 cookbook_path = "/home/thorsten/scm/code/chef/cookbooks/"
 extlist = [dname for dname in os.listdir(cookbook_path)]
+
+package_mappings = ['libgcrypt11']
+
+def load_debtree_files():
+  global endlist
+  global skiplist
+  endlist = [line.strip() for line in open(endfile)]
+  skiplist = [line.strip() for line in open(skipfile)]
 
 def list_diff(list1, list2):
   return list(set(list1) - set(list2))
@@ -55,6 +59,8 @@ def process_package(pkg_name):
 
 cache = apt.Cache()
 pkg_name = sys.argv[1]
+
+load_debtree_files()
 
 workdeque.append(pkg_name)
 
