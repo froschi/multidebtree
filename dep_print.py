@@ -20,7 +20,7 @@ endfile = "/home/thorsten/.debtree/endlist"
 skipfile = "/home/thorsten/.debtree/skiplist"
 
 cookbook_path = "/home/thorsten/scm/code/chef/cookbooks/"
-extlist = [dname for dname in os.listdir(cookbook_path)]
+extlist = os.listdir(cookbook_path)
 
 package_mappings = ['libgcrypt11']
 
